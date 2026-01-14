@@ -149,6 +149,7 @@ Validation 대비 성능은 소폭 하락했으나,
 
 ## 프로젝트 구조
 
+```text
 Telco_customer_project/
 ├─ data/
 │  └─ Telco-Customer-Churn.csv
@@ -156,3 +157,4 @@ Telco_customer_project/
 │  └─ Telco_customer_churn.ipynb
 ├─ .gitignore 
 └─ README.md
+
