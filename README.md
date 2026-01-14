@@ -146,3 +146,13 @@ Validation 대비 성능은 소폭 하락했으나,
   **전체 평균 대비 약 2배 수준**
 - 무작위 타겟팅 대비 **동일 예산으로 더 많은 이탈 고객을 포착 가능**
 - 유지 캠페인의 **비용 효율 개선 가능성** 제시
+
+## 프로젝트 구조
+
+Telco_customer_project/
+├─ data/
+│  └─ Telco-Customer-Churn.csv
+├─ notebooks/
+│  └─ Telco_customer_churn.ipynb
+├─ .gitignore 
+└─ README.md
