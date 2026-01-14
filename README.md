@@ -51,7 +51,9 @@
 ### 변수 설정
 - `customer_id`: 식별자이므로 제거
 - `tenure_group`: EDA 과정에서 생성된 파생 변수로, `tenure`와 중복 → 제거
-- `gender`: 이탈률 차이 및 통계 검정 결과 영향 미미 → 제거
+- `gender`: 변수는 통계적 검정 결과 이탈률 차이가 유의미하지 않았으며,  
+            추가적으로 성별에 따른 편향 가능성을 사전에 차단하기 위해  
+            모델 학습 변수에서 의도적으로 제외하였다.
 
 ### 전처리 파이프라인
 - 수치형 변수: 결측값 대체 후 **StandardScaler**
@@ -85,31 +87,35 @@
 ## 6. 모델 평가 기준 및 임곗값 정책
 
 ### 핵심 평가 원칙
-- **1차 지표: Recall (≥ 0.80)**
+- **1차 지표: Recall (목표 ≥ 0.80)**  
+  → 이탈 고객 미탐(False Negative) 최소화
 - **2차 지표: F1 Score**
 - 보조 지표: Precision, PPR, PR-AUC
 
 ### 임곗값(threshold) 정책
-- Validation set에서 다음 조건을 만족하는 임곗값 선택:
-  1. Recall ≥ 0.80을 만족
-  2. 해당 조건을 만족하는 범위 내에서 **F1 Score 최대**
-- 선택된 임곗값은 **고정**하여 Test set에 1회 적용
-- 하이퍼파라미터 튜닝(CV)과 임곗값 선택을 분리하여 **최적화 편향 방지**
+- Validation set에서 다음 조건을 만족하는 임곗값을 선택:
+  1. Recall 목표(≥ 0.80)를 만족
+  2. 해당 범위 내에서 **F1 Score 최대**
+- 선택된 임곗값은 **고정** 하여 Test set에 **1회만 적용**
+- 하이퍼파라미터 튜닝(CV)과 임곗값 선택을 분리하여  
+  **최적화 편향 및 데이터 누수 방지**
 
 ---
 
 ## 7. 모델 비교 및 최종 선정
 
 각 모델에 대해 Base / RandomizedSearch / Optuna 탐색을 수행한 뒤,  
-**운영 정책(Recall ≥ 0.80)을 만족하는 최고 성능 모델**을 대표값으로 선정하여 비교하였다.
+**Validation set에서 Recall 목표(≥ 0.80)를 만족하는 모델들**을 대상으로  
+성능 및 운영 지표를 비교하였다.
 
 ### 최종 선택 모델
 - **CatBoost + Optuna**
 
 선정 이유:
-- Recall 기준을 안정적으로 충족
-- Recall 제약 하에서 **F1 Score 최대**
+- Validation 기준 Recall 목표를 안정적으로 충족
+- Recall 제약 조건 하에서 **F1 Score 최대**
 - PR-AUC가 가장 높아 **이탈 고객 랭킹 품질이 우수**
+- 동일 조건 대비 성능 분산이 작아 **안정적인 예측 특성** 확인
 
 ---
 
@@ -121,8 +127,8 @@
 - PR-AUC: **0.649**
 - Predicted Positive Rate (PPR): **40.1%**
 
-Validation 대비 성능은 소폭 하락했으나,  
-과적합이나 임곗값 불안정 징후는 관찰되지 않았다.
+Validation 대비 Test 성능은 소폭 하락하였으나,  
+Recall·Precision·PPR 전반에서 지표 간 과도한 변동은 관찰되지 않았다.
 
 ---
 
@@ -157,4 +163,5 @@ Telco_customer_project/
 │  └─ Telco_customer_churn.ipynb
 ├─ .gitignore 
 └─ README.md
+``` 
 
